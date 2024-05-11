@@ -1,3 +1,6 @@
+// Trabajo grupal fase 1 y 2..... THAI
+
+
 #include <iostream>
 #include <fstream>
 #include <string>
