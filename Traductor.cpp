@@ -1,5 +1,5 @@
 // Trabajo grupal fase 1 y 2..... THAI
-
+// Perseverando llegaremos a la cima...... Luis
 
 #include <iostream>
 #include <fstream>
@@ -175,6 +175,9 @@ void traducirPalabrasReservadas(const string& codigo) {
     while (getline(archivoPalabras, palabra, ',')) {
         getline(archivoPalabras, traduccion, ',');
         getline(archivoPalabras, significado);
+        // Elimina los espacios en blanco al inicio y al final de la palabra
+        palabra.erase(0, palabra.find_first_not_of(" \t\n\r"));
+        palabra.erase(palabra.find_last_not_of(" \t\n\r") + 1);
         traducciones[palabra] = traduccion;
     }
 
@@ -183,57 +186,29 @@ void traducirPalabrasReservadas(const string& codigo) {
     istringstream stream(codigo);
     string linea;
 
-    bool dentroDeComentario = false;
-    bool dentroDeCadena = false;
-
     // Lee cada línea del código ingresado
     while (getline(stream, linea)) {
-        // Comprueba si la línea está dentro de un comentario de una línea
-        size_t posComentarioLinea = linea.find("//");
-        if (posComentarioLinea != string::npos) {
-            cout << linea.substr(0, posComentarioLinea) << endl;
-            break; // Termina la traducción después del comentario de una línea
-        }
-
-        // Comprueba si la línea está dentro de un comentario de varias líneas
-        size_t posComentarioInicio = linea.find("/*");
-        if (posComentarioInicio != string::npos) {
-            dentroDeComentario = true;
-        }
-
-        // Si estamos dentro de un comentario, muestra la línea y continúa con la siguiente
-        if (dentroDeComentario) {
-            size_t posComentarioFin = linea.find("*/");
-            if (posComentarioFin != string::npos) {
-                dentroDeComentario = false;
-            }
-            continue;
-        }
-
-        // Comprueba si la línea contiene una cadena
-        size_t posComillas = linea.find("\"");
-        if (posComillas != string::npos) {
-            dentroDeCadena = !dentroDeCadena;
-        }
-
-        // Si estamos dentro de una cadena, muestra la línea y continúa con la siguiente
-        if (dentroDeCadena) {
-            cout << linea << endl;
-            continue;
-        }
-
-        // Procesa la línea palabra por palabra para mantener los signos de puntuación
         istringstream palabraStream(linea);
         string palabraCodigo;
-        while (palabraStream >> palabraCodigo) {
-            // Elimina cualquier signo de puntuación que pueda estar presente en la palabra
-            string palabraSinPuntuacion = palabraCodigo;
-            palabraSinPuntuacion.erase(remove_if(palabraSinPuntuacion.begin(), palabraSinPuntuacion.end(), ::ispunct), palabraSinPuntuacion.end());
 
-            // Si la palabra está presente en el mapa de traducciones, muestra su traducción
-            if (traducciones.find(palabraSinPuntuacion) != traducciones.end()) {
-                cout << traducciones[palabraSinPuntuacion] << palabraCodigo.substr(palabraSinPuntuacion.length()) << " ";
+        // Lee la primera palabra de la línea
+        palabraStream >> palabraCodigo;
+
+        // Verifica si la palabra es una palabra reservada conocida
+        if (traducciones.find(palabraCodigo) != traducciones.end()) {
+            cout << traducciones[palabraCodigo] << " ";
+        } else {
+            // Si no es una palabra reservada, imprime la palabra tal cual
+            cout << palabraCodigo << " ";
+        }
+
+        // Procesa el resto de la línea palabra por palabra
+        while (palabraStream >> palabraCodigo) {
+            // Si la palabra es una palabra reservada conocida, imprime su traducción
+            if (traducciones.find(palabraCodigo) != traducciones.end()) {
+                cout << traducciones[palabraCodigo] << " ";
             } else {
+                // Si no es una palabra reservada, imprime la palabra tal cual
                 cout << palabraCodigo << " ";
             }
         }
