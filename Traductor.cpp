@@ -161,7 +161,7 @@ void editarPalabra(const string& palabraAEditar) {
 }
 
 // Función para traducir las palabras reservadas de C++ en el código ingresado
-void traducirPalabrasReservadas(const string& codigo) {
+void traducirPalabrasReservadas(const string& codigo) { //////PR
     ifstream archivoPalabras("datos.txt");
     if (!archivoPalabras) {
         cerr << "Error al abrir el archivo de palabras." << endl;
